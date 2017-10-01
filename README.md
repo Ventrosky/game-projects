@@ -3,3 +3,5 @@ Connect4 implementation in JavaScript using AlphaBeta-Minimax alghoritm.
 
 note:
 not finished yet
+link:
+https://ventrosky.github.io/Connect4/
