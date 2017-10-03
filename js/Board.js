@@ -106,7 +106,7 @@ Connect4.Board.prototype.makeMove = function(col, g, player, token){
   player = player || this.curr;
 	if (this.canPlay(col,g)){
 		var row = this.topRowCol(col,g);
-    if (row == -1) return [];
+    if (row == -1) return false;
 		g[row][col] = ( token ? token : this.currentPlayer(player));
 		this.story.push(col);
 		return g;
@@ -117,7 +117,8 @@ Connect4.Board.prototype.makeMove = function(col, g, player, token){
 
 Connect4.Board.prototype.isGameOver = function(g) { 
 	g = g || this.grid;
-  return (this.getMoves(g).length == 0);
+  var moves = this.getMoves(g);
+  return (moves.length == 0);
 };
 
 Connect4.Board.prototype.isWinMove = function(col, g){
