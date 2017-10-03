@@ -19,7 +19,7 @@ Connect4.AI = function(state, rows, cols, player, board){
 Connect4.AI.prototype.getBestMove= function(board, maxDepth) { 
 	this.initFours();
 	this.clearFours();
-	var moves = this.board.getMoves(grid);
+	var moves = this.board.getMoves(board.grid);
 	if (moves.length == 1) return moves[0];
 	res = this.minmax(maxDepth, 0, board.grid, this.fours, this.player, null);
 	//res = this.abMinmax(maxDepth, 0, board.grid, this.fours, this.player, null, this.MIN * 10, this.MAX*10);
