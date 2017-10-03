@@ -162,17 +162,19 @@ Connect4.GameState = {
             return false;
         };
         if ((this.waitLanding == false) && (this.restart == false) && (this.cpuTurn == false)){
-            if(this.board.isWinMove(i)){
-                console.log("WINNER WINNER CHICKEN DINNER!");
-                this.chickenDinner = true;
-            };
-            if(this.board.makeMove(i)){
-                this.waitLanding = true;
-                Connect4.game.state.getCurrentState().dropChip("chip"+this.board.currentPlayer(),i);
-                if (this.chickenDinner != true){
-                    this.cpuTurn = true;
+            if (this.board.canPlay(i, this.board.grid)){
+                if(this.board.isWinMove(i)){
+                    console.log("WINNER WINNER CHICKEN DINNER!");
+                    this.chickenDinner = true;
                 };
-                return true;
+                if(this.board.makeMove(i)){
+                    this.waitLanding = true;
+                    Connect4.game.state.getCurrentState().dropChip("chip"+this.board.currentPlayer(),i);
+                    if (this.chickenDinner != true){
+                        this.cpuTurn = true;
+                    };
+                    return true;
+                };
             };
         } else {
             return false;

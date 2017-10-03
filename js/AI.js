@@ -19,6 +19,8 @@ Connect4.AI = function(state, rows, cols, player, board){
 Connect4.AI.prototype.getBestMove= function(board, maxDepth) { 
 	this.initFours();
 	this.clearFours();
+	var moves = this.board.getMoves(grid);
+	if (moves.length == 1) return moves[0];
 	res = this.minmax(maxDepth, 0, board.grid, this.fours, this.player, null);
 	//res = this.abMinmax(maxDepth, 0, board.grid, this.fours, this.player, null, this.MIN * 10, this.MAX*10);
 	return res.move;
@@ -125,12 +127,14 @@ Connect4.AI.prototype.minmax= function(maxDepth, currentDepth, grid, fours, play
 	fours = fours || this.fours;
 	var val;
 	var bestMove = null, bestScore;
+	var moves = this.board.getMoves(grid);
 	//check if done rec
-	if (this.board.isGameOver(grid) || (currentDepth == maxDepth)){
+	if (this.board.isGameOver(grid) || (currentDepth == maxDepth)){// || (moves.length == 1)
 		val = this.evaluate(grid, fours.chain, player, currMove);
+		//bestMove = (moves.length == 1 ? moves[0] : currMove);
 		return {
-			score: val,
-			move: bestMove	
+			"score": val,
+			"move": bestMove//bestMove	// currMove
 		};
 	};
 	if (player == this.player){
@@ -142,6 +146,7 @@ Connect4.AI.prototype.minmax= function(maxDepth, currentDepth, grid, fours, play
 	var newGrid, result, row;
 	var newPlayer = (player+1) % 2;
 	//go trough moves
+
 	for (var i = 0; i < moves.length; i++){
 		newGrid = this.board.getGridCopy(grid);
 		newGrid = this.board.makeMove(moves[i], newGrid, player, this.tokens[player]);
