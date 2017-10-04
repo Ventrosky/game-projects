@@ -4,16 +4,20 @@ Connect4.AI = function(state, rows, cols, player, board){
 	this.state = state;
 	this.rows = rows;
 	this.cols = cols;
-	this.player = player;
-	this.token = board.tokens[player];
-	this.tokens = [1,2];
+	this.player = player;// 1 or 2
+	this.token = board.tokens[player-1]; 
+	this.tokens = board.tokens;
 	this.MAX = 10000;
 	this.MIN = -this.MAX;
-	this.WEIGHTS=[1.1,1.2,1.3,1.4,1.3,1.2,1.1];
+	this.WEIGHTS=[1.1,1.2,1.3,1.4,1.3,1.2,1.1];//columns
 	this.fours = { "chain": [], "node": {}};//69 possible 4, quick access
 	this.board = board;
 	this.initFours();
 
+};
+Connect4.AI.prototype.setPlayer = function(player){
+	this.player = player;
+	this.token = board.tokens[player];
 };
 
 Connect4.AI.prototype.getBestMove= function(board, maxDepth) { 
@@ -21,7 +25,7 @@ Connect4.AI.prototype.getBestMove= function(board, maxDepth) {
 	this.clearFours();
 	var moves = this.board.getMoves(board.grid);
 	if (moves.length == 1) return moves[0];
-	res = this.minmax(maxDepth, 0, board.grid, this.fours, this.player, null);
+	res = this.minmax(maxDepth, 0, board.grid, this.fours, this.player-1, null);
 	//res = this.abMinmax(maxDepth, 0, board.grid, this.fours, this.player, null, this.MIN * 10, this.MAX*10);
 	return res.move;
 };
@@ -37,20 +41,21 @@ Connect4.AI.prototype.copyFours= function(fours){
 	return newFours;
 };
 
-Connect4.AI.prototype.evaluate= function(grid, chain, player, move) {
-	player = player || this.token; 
+Connect4.AI.prototype.evaluate= function(grid, chain, playerIdx, move) {
+	playerIdx = playerIdx || (this.player -1); 
 	grid  = grid || this.board.grid;
 	chain = chain || this.fours["chain"];
-	var winner = this.filledFours(grid, chain);
-	if (winner !=0){ //exist a winner
-		return (this.tokens[player] == this.token ? this.MAX*10 : this.MIN*10);
-	};
 	var val = 0, part;
+	var winner = this.filledFours(grid, chain);
+	if (winner >0){ //exist a winner
+		val = (winner == this.tokens[playerIdx] ? this.MAX*10 : this.MIN*10);
+		return val;
+	};
 	var moves = this.board.getMoves(grid);
 	var pos;
 	for (key in chain){
 		pos = chain[key];//count tokens and score
-		part = this.lineScore(pos, grid, player);
+		part = this.lineScore(pos, grid, playerIdx);
 		if(move != null){// test weight
 			part.score *= this.WEIGHTS[move]; 
 		};//if opponent win next turn
@@ -60,12 +65,14 @@ Connect4.AI.prototype.evaluate= function(grid, chain, player, move) {
 			if (col >= 0){
 				if (this.board.topRowCol(col, grid) == empty[0]){
 					val += this.MIN/2;
+					//val += -500;
 				};// 3th token avaiable
 			};
 		}else if(part.hasOwnProperty("4th")){
 			var empty = part["4th"];
 			var col = moves.indexOf(empty[1]);
 			if (col >= 0){
+
 				if (this.board.topRowCol(col, grid) == empty[0]){
 					val += this.MIN;
 				};// 4th token avaiable
@@ -73,15 +80,15 @@ Connect4.AI.prototype.evaluate= function(grid, chain, player, move) {
 		};
 		val += part.score;
 	};
-	//if((this.board.topRowCol(col, grid)+1)%2 == 0){//even row
-	//	val += (player==this.player ? 500 : -500);
-	//} else {//odd row
-	//	val +=(player!= this.player ? 500 : -500);
-	//};
+	if((this.board.topRowCol(col, grid)+1)%2 == 0){//even row
+		val += (playerIdx == (this.player-1) ? 500 : -500);
+	} else {//odd row
+		val +=(playerIdx != (this.player-1) ? 500 : -500);
+	};
 	return val;
 };
 // count tokens in a four row
-Connect4.AI.prototype.lineScore= function(pos, grid, player){
+Connect4.AI.prototype.lineScore= function(pos, grid, playerIdx){
 	//if (pos == null) return 0;
 	grid = grid || this.board.grid;
 	var score = 0, part = 0, idx, tok;
@@ -90,7 +97,7 @@ Connect4.AI.prototype.lineScore= function(pos, grid, player){
 		idx = pos[i];
 		tok = grid[idx[0]][idx[1]];
 		if (tok != 0){
-			part+=(tok == this.tokens[player] ? 1 : -1);//player	
+			part+=(tok == this.tokens[playerIdx] ? 1 : -1);//player	
 		} else {
 			lastEmpty = pos[i];
 		};
@@ -121,7 +128,7 @@ Connect4.AI.prototype.lineScore= function(pos, grid, player){
     return {"score": score};
 };
 
-Connect4.AI.prototype.minmax= function(maxDepth, currentDepth, grid, fours, player, currMove) { 
+Connect4.AI.prototype.minmax= function(maxDepth, currentDepth, grid, fours, playerIdx, currMove) { 
 	grid = grid || this.board.grid;
 	fours = fours || this.fours;
 	fours = fours || this.fours;
@@ -129,33 +136,39 @@ Connect4.AI.prototype.minmax= function(maxDepth, currentDepth, grid, fours, play
 	var bestMove = null, bestScore;
 	var moves = this.board.getMoves(grid);
 	//check if done rec
-	if (this.board.isGameOver(grid) || (currentDepth == maxDepth)){// || (moves.length == 1)
-		val = this.evaluate(grid, fours.chain, player, currMove);
-		//bestMove = (moves.length == 1 ? moves[0] : currMove);
+	if (this.board.isGameOver(grid, currMove, this.tokens[playerIdx]) || (currentDepth == maxDepth)){// || (moves.length == 1)
+		val = this.evaluate(grid, fours.chain, (playerIdx+1) % 2, currMove);
 		return {
 			"score": val,
-			"move": bestMove//bestMove	// currMove
+			"move": currMove
 		};
 	};
-	if (player == this.player){
+	if (playerIdx == (this.player -1)){
 		bestScore = this.MIN*10;
 	}else{
 		bestScore = this.MAX*10;
 	};
 	var moves = this.board.getMoves(grid);
 	var newGrid, result, row;
-	var newPlayer = (player+1) % 2;
-	//go trough moves
 
+	var newPlayerIdx = (playerIdx+1) % 2;// 0 or 1
+	//go trough moves
 	for (var i = 0; i < moves.length; i++){
 		newGrid = this.board.getGridCopy(grid);
-		newGrid = this.board.makeMove(moves[i], newGrid, player, this.tokens[player]);
+		newGrid = this.board.makeMove(moves[i], newGrid, playerIdx, this.tokens[playerIdx]);
+		if (this.board.isWinMove(moves[i], newGrid, this.tokens[playerIdx])) {// victory move && (currentDepth == 1
+			val = this.evaluate(newGrid, fours.chain, playerIdx, moves[i]);//playerIdx
+			return {
+			"score": val,
+			"move": moves[i]//bestMove	// currMove
+			};
+		}
 		var newFours = this.copyFours(fours);
 		this.clearFours(newGrid, newFours.node, newFours.chain);
 		//recurse
-		result = this.minmax(maxDepth, currentDepth+1, newGrid, newFours, newPlayer, moves[i]);
-		//update current
-		if (player == this.player){
+		result = this.minmax(maxDepth, currentDepth+1, newGrid, newFours, newPlayerIdx, moves[i]);
+        //update current
+		if (playerIdx == (this.player - 1)){
 			if (result.score > bestScore){
 				bestScore = result.score;
 				bestMove = moves[i];
@@ -175,56 +188,68 @@ Connect4.AI.prototype.minmax= function(maxDepth, currentDepth, grid, fours, play
 	return {"score": bestScore, "move": bestMove};
 };
 // TO DO
-Connect4.AI.prototype.abMinmax= function(maxDepth, currentDepth, grid, fours, player, currMove, alpha, beta) { 
-	grid = grid || this.board.grid;
-	fours = fours || this.fours;
-	fours = fours || this.fours;
-	var val;
-	var bestMove = null, bestScore;
-	//check if done rec
-	if (this.board.isGameOver(grid) || (currentDepth == maxDepth)){
-		val = this.evaluate(grid, fours.chain, player, currMove);
-		return {
-			score: val,
-			move: bestMove	
-		};
-	};
-	if (player == this.player){
-		bestScore = this.MIN*10;
-	}else{
-		bestScore = this.MAX*10;
-	};
-	var moves = this.board.getMoves(grid);
-	var newGrid, result, row;
-	var newPlayer = (player+1) % 2;
-	//go trough moves
-	for (var i = 0; i < moves.length; i++){
-		newGrid = this.board.getGridCopy(grid);
-		newGrid = this.board.makeMove(moves[i], newGrid, player, this.tokens[player]);
-		var newFours = this.copyFours(fours);
-		this.clearFours(newGrid, newFours.node, newFours.chain);
-		//recurse
-		result = this.abMinmax(maxDepth, currentDepth+1, newGrid, newFours, newPlayer, moves[i], alpha, beta);
-		//update current
-		if (player == this.player){
-			if (result.score > bestScore){
-				bestScore = result.score;
-				bestMove = moves[i];
-			}else if (result.score == bestScore){
-				bestMove = (this.coinToss() ? moves[i] : bestMove);
-			};
-		} else {
-			if (result.score < bestScore){
-				bestScore = result.score;
-				bestMove = moves[i];
-			}else if (result.score == bestScore){
-				bestMove = (this.coinToss() ? moves[i] : bestMove);
-			};
-		};
-	};
-	//return best score and move
-	return {"score": bestScore, "move": bestMove};
-};
+//Connect4.AI.prototype.abMinmax= function(maxDepth, currentDepth, grid, fours, player, currMove, alpha, beta) { 
+//	grid = grid || this.board.grid;
+//	fours = fours || this.fours;
+//	fours = fours || this.fours;
+//	var val;
+//	var bestMove = null, bestScore;
+//	var moves = this.board.getMoves(grid);
+//	//check if done rec
+//	if (this.board.isGameOver(grid) || (currentDepth == maxDepth)){// || (moves.length == 1)
+//		val = this.evaluate(grid, fours.chain, (player+1) % 2, currMove);
+//		return {
+//			"score": val,
+//			"move": bestMove//bestMove	// currMove
+//		};
+//	};
+//	if (player == this.player){
+//		bestScore = this.MIN*10;
+//	}else{
+//		bestScore = this.MAX*10;
+//	};
+//	var moves = this.board.getMoves(grid);
+//	var newGrid, result, row;
+//	var newPlayer = (player+1) % 2;
+//	//go trough moves
+//	for (var i = 0; i < moves.length; i++){
+//		newGrid = this.board.getGridCopy(grid);
+//		newGrid = this.board.makeMove(moves[i], newGrid, player, this.tokens[player]);
+//		var newFours = this.copyFours(fours);
+//		this.clearFours(newGrid, newFours.node, newFours.chain);
+//		//recurse
+//		result = this.minmax(maxDepth, currentDepth+1, newGrid, newFours, newPlayer, moves[i]);
+//		//update current
+//		if (player == this.player){
+//			if (result.score > bestScore){
+//				bestScore = result.score;
+//				bestMove = moves[i];
+//				alpha = Math.max(alpha, bestScore);
+//				if (result.score > beta){
+//					return {"score": bestScore, "move": bestMove};
+//				};
+//
+//			}else if (result.score == bestScore){
+//				bestMove = (this.coinToss() ? moves[i] : bestMove);
+//			};
+//		} else {
+//			if (result.score < bestScore){
+//				bestScore = result.score;
+//				bestMove = moves[i];
+//				beta =Math.min(beta, bestScore);
+//				if (result.score > alpha){
+//					return {"score": bestScore, "move": bestMove};
+//				};
+//
+//
+//			}else if (result.score == bestScore){
+//				bestMove = (this.coinToss() ? moves[i] : bestMove);
+//			};
+//		};
+//	};
+//	//return best score and move
+//	return {"score": bestScore, "move": bestMove};
+//};
 //init 69 possible fours
 Connect4.AI.prototype.initFours= function(){
 	this.fours = { "chain": [], "node": {}};
@@ -345,7 +370,7 @@ Connect4.AI.prototype.winTokens= function(pos, grid){
 	var winner = !line.some(function(value, index, array){
         return value !== array[0];
     });
-    return (winner ? line[0] : 0);
+    return (winner ? line[0] : -1);
 };
 //check all fours left for 4 of a kind
 Connect4.AI.prototype.filledFours = function(grid, chain){
@@ -359,7 +384,7 @@ Connect4.AI.prototype.filledFours = function(grid, chain){
 			return winner;
 		};
 	};
-	return 0;
+	return -1;
 };
 
 Connect4.AI.prototype.coinToss = function() {

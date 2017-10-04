@@ -16,6 +16,7 @@ Connect4.GameState = {
         this.restart = false; //shaking
         this.waitLanding = false; //dropping piece
         this.cpuTurn = false;
+        this.AIon = true;
 	},
 
 	//preload assets
@@ -28,6 +29,8 @@ Connect4.GameState = {
         this.load.image('colButton','assets/column.png');
         this.load.image('retButton','assets/return.png');
         this.load.image('particle','assets/diamond.png');
+        this.load.image('logo','assets/logo4.png');
+        this.load.spritesheet('playerBtn', 'assets/player.png', 100,100);
     },
 
 	//exec after loading
@@ -48,7 +51,7 @@ Connect4.GameState = {
         this.chips = this.game.add.group();
         this.chips.enableBody = true;
 		this.board = new Connect4.Board(this, this.GRID_HEIGHT, this.GRID_WIDTH);
-        this.ai = new Connect4.AI(this, this.GRID_HEIGHT, this.GRID_WIDTH, 1, this.board);
+        this.ai = new Connect4.AI(this, this.GRID_HEIGHT, this.GRID_WIDTH, 2, this.board);
         this.frame = this.add.sprite(150,85,'frame');
         this.createOnscreenControls();
 	},
@@ -144,6 +147,22 @@ Connect4.GameState = {
         };
     },
 
+    changeMode: function(){
+        if ((this.cpuTurn == false) && (this.waitLanding == false)){
+            this.resetBoard();
+            if (this.AIon){
+                this.AIon = false;
+                this.modeBut.frame = 1;
+            } else {
+                this.AIon = true;
+                this.modeBut.frame = 0;
+                if (this.board.currentPlayer() == 2){
+                    this.cpuTurn = true;
+                };
+            };
+        };
+    },
+
     createOnscreenControls: function() {
         this.colButtons = this.game.add.group();
         for (var i = 0; i < this.GRID_WIDTH; i++){
@@ -154,23 +173,27 @@ Connect4.GameState = {
         this.retBut = this.add.button(700, 500,'retButton');
         this.retBut.alpha = 0.5;
         this.retBut.onInputUp.add(this.resetBoard.bind(this));
+        this.modeBut = this.add.button(0, 500,'playerBtn');
+        this.modeBut.frame = 0;
+        this.modeBut.alpha = 0.5;
+        this.modeBut.onInputUp.add(this.changeMode.bind(this));
     },
 
     clicked: function(i) {
         if (this.chickenDinner){
-            console.log("we already have a winner, restart");
+            //console.log("we already have a winner, restart");
             return false;
         };
         if ((this.waitLanding == false) && (this.restart == false) && (this.cpuTurn == false)){
             if (this.board.canPlay(i, this.board.grid)){
                 if(this.board.isWinMove(i)){
-                    console.log("WINNER WINNER CHICKEN DINNER!");
+                    //console.log("WINNER WINNER CHICKEN DINNER!");
                     this.chickenDinner = true;
                 };
                 if(this.board.makeMove(i)){
                     this.waitLanding = true;
                     Connect4.game.state.getCurrentState().dropChip("chip"+this.board.currentPlayer(),i);
-                    if (this.chickenDinner != true){
+                    if ((this.chickenDinner != true) && (this.AIon)){
                         this.cpuTurn = true;
                     };
                     return true;
