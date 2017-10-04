@@ -29,7 +29,6 @@ Connect4.GameState = {
         this.load.image('colButton','assets/column.png');
         this.load.image('retButton','assets/return.png');
         this.load.image('particle','assets/diamond.png');
-        this.load.image('logo','assets/logo4.png');
         this.load.spritesheet('playerBtn', 'assets/player.png', 100,100);
     },
 
