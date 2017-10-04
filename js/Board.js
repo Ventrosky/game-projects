@@ -101,13 +101,14 @@ Connect4.Board.prototype.getMoves = function(g) {
     return appo;
 };
 
-Connect4.Board.prototype.makeMove = function(col, g, player, token){
+Connect4.Board.prototype.makeMove = function(col, g, playerIdx, token){
 	g = g || this.grid;
-  player = player || this.curr;
+  token = token || this.tokens[this.curr];
+  playerIdx = playerIdx || this.curr;
 	if (this.canPlay(col,g)){
 		var row = this.topRowCol(col,g);
     if (row == -1) return false;
-		g[row][col] = ( token ? token : this.currentPlayer(player));
+		g[row][col] = ( token ? token : this.currentPlayer(playerIdx));
 		this.story.push(col);
 		return g;
 	}else{
@@ -115,20 +116,29 @@ Connect4.Board.prototype.makeMove = function(col, g, player, token){
 	};
 };
 
-Connect4.Board.prototype.isGameOver = function(g) { 
+Connect4.Board.prototype.isGameOver = function(g, move, token) { 
 	g = g || this.grid;
   var moves = this.getMoves(g);
-  return (moves.length == 0);
+  //if (moves.length == 0) return true;
+  if (moves.length == 0) return true;
+  if (token){                                          // HERE!!!!!!!!!!!!!!!!
+    if (this.isWinMove(move, g, token)){
+      return true;
+    };
+  };
+  return false;
 };
 
-Connect4.Board.prototype.isWinMove = function(col, g){
-	g = g || this.grid;
-    var token = this.currentPlayer();
+Connect4.Board.prototype.isWinMove = function(col, g, token){
+    token = token || this.currentPlayer();
+	  g = g || this.grid;
+    //var token = this.currentPlayer();
     var row = this.topRowCol(col);
     if (row == -1) return false;
     var rows = this.rows;
     var cols = this.cols;
     var delta_pos;
+    var oldToken = g[row][col]
     g[row][col]=token; //init move
     var appo = [[1, 0], [0, 1], [1, 1], [1, -1]];
     for (var i = 0; i < appo.length; i++){
@@ -149,7 +159,7 @@ Connect4.Board.prototype.isWinMove = function(col, g){
                 	break;
                 };
                 if (consecutive_items == 4){
-                	g[row][col]=0;//reset move
+                	g[row][col]=oldToken;//reset move
                     return true;
                 };
                 next_row += delta_pos[0];
@@ -157,7 +167,7 @@ Connect4.Board.prototype.isWinMove = function(col, g){
             };
         };
     };
-    g[row][col]=0;//reset move
+    g[row][col]=oldToken;//reset move
     return false;
 };
 
