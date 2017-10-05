@@ -1,5 +1,5 @@
 # Connect4
-Connect4 implementation in JavaScript using minimax alghoritm.
+Connect4 implementation in JavaScript using minimax alghoritm and Phaser framework.
 
 
 link:
