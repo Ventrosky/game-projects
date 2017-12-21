@@ -4,7 +4,7 @@
 ## connect4
 
 Connect4 implementation in JavaScript using minimax alghoritm and the Phaser.js framework. Some of the graphic assets I have used are made available by Kenney.nl under public domain license.
-* link: https://ventrosky.github.io/connect4/index.html
+* link: https://ventrosky.github.io/games/connect4/index.html
 
 ## dachschound
 
