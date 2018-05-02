@@ -14,4 +14,4 @@ Help the dachshunds jumping off the cliff. This is a Cowabunga clone developed w
 ## Scratch
 
 Scratch projects created for the [Pisa CoderDojo](https://pisa.coderdojo.it/), used for teaching young people coding concepts
-* [Simon Game](https://scratch.mit.edu/projects/11216659/)
+* [Simon Game](https://scratch.mit.edu/projects/220085608/)
