@@ -10,3 +10,8 @@ Connect4 implementation in JavaScript using minimax alghoritm and the Phaser.js 
 
 Help the dachshunds jumping off the cliff. This is a Cowabunga clone developed with Phaser.js and dedicated to my girlfriend. The enviroment graphic assets come from Spriter Pro.
 * link: https://buccaneerdev.itch.io/dachshund
+
+## Scratch
+
+Scratch projects created for the [Pisa CoderDojo](https://pisa.coderdojo.it/), used for teaching young people coding concepts
+* [Simon Game](https://scratch.mit.edu/projects/11216659/)
