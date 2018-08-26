@@ -13,7 +13,7 @@ Help the dachshunds jumping off the cliff. This is a Cowabunga clone developed w
 
 ## road-crossing
 
-Simple Road Crossing Game with **Phaser 3**. Developed as part of the Zenva's *HTML5 Game Development Mini-Degree* Curriculum.
+Simple Road Crossing Game with **Phaser 3**. Developed as part of the Zenva's *HTML5 Game Development Mini-Degree* Courses.
 
 ## Scratch
 
