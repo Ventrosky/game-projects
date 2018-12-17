@@ -15,6 +15,10 @@ Help the dachshunds jumping off the cliff. This is a Cowabunga clone developed w
 
 Simple Road Crossing Game with **Phaser 3**. Developed as part of the Zenva's *HTML5 Game Development Mini-Degree* Courses.
 
+## tappy-plane
+
+Just another flappy bird clone using **Java** and the **libGDX** framework.
+
 ## Scratch
 
 **Scratch** projects created for the [Pisa CoderDojo](https://pisa.coderdojo.it/), used for teaching young people coding concepts
