@@ -1,0 +1,89 @@
+
+flappee_plane_assets.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+background
+  rotate: false
+  xy: 2, 36
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+button
+  rotate: false
+  xy: 804, 430
+  size: 212, 84
+  orig: 212, 84
+  offset: 0, 0
+  index: -1
+buttonClick
+  rotate: false
+  xy: 804, 344
+  size: 212, 84
+  orig: 212, 84
+  offset: 0, 0
+  index: -1
+groundCave
+  rotate: false
+  xy: 2, 518
+  size: 808, 480
+  orig: 808, 480
+  offset: 0, 0
+  index: -1
+refresh
+  rotate: false
+  xy: 804, 242
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+rockDown
+  rotate: false
+  xy: 812, 758
+  size: 120, 240
+  orig: 120, 240
+  offset: 0, 0
+  index: -1
+rockGrass
+  rotate: false
+  xy: 812, 516
+  size: 120, 240
+  orig: 120, 240
+  offset: 0, 0
+  index: -1
+score1
+  rotate: false
+  xy: 2, 2
+  size: 256, 32
+  orig: 256, 32
+  offset: 0, 0
+  index: -1
+
+flappee_plane_assets2.png
+size: 1024,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Explosion
+  rotate: false
+  xy: 2, 77
+  size: 591, 118
+  orig: 591, 118
+  offset: 0, 0
+  index: -1
+plane1
+  rotate: false
+  xy: 595, 122
+  size: 264, 73
+  orig: 264, 73
+  offset: 0, 0
+  index: -1
+textGetReady
+  rotate: false
+  xy: 2, 2
+  size: 400, 73
+  orig: 400, 73
+  offset: 0, 0
+  index: -1
