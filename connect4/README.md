@@ -3,7 +3,7 @@ Connect4 implementation in JavaScript using minimax alghoritm and [Phaser](https
 
 
 Game link:
-https://ventrosky.github.io/games/connect4/index.html
+https://ventrosky.github.io/game-projects/connect4/index.html
 
 
 Some of the graphic assets I use are made available under public domain license by [Kenney](https://www.kenney.nl).
