@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.5" orientation="orthogonal" renderorder="right-down" width="24" height="24" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="32">
+<map version="1.2" tiledversion="1.2.5" orientation="orthogonal" renderorder="right-down" width="24" height="24" tilewidth="64" tileheight="64" infinite="0" nextlayerid="12" nextobjectid="33">
  <tileset firstgid="1" name="RPGpack_sheet" tilewidth="64" tileheight="64" tilecount="260" columns="20">
-  <image source="../src/assets/images/RPGpack_sheet.png" width="1280" height="832"/>
+  <image source="../../../../../../../Steam/steamapps/common/Kenney Game Assets/Assets/Art/RPG pack (230 assets)/Spritesheet/RPGpack_sheet.png" width="1280" height="832"/>
  </tileset>
  <layer id="9" name="background" width="24" height="24">
   <data encoding="csv">
-14,52,52,52,52,52,52,52,52,52,52,154,156,52,52,52,52,52,52,52,52,52,52,15,
-33,22,22,22,22,22,6,7,8,22,22,174,176,22,22,22,22,22,22,22,22,22,22,31,
+14,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,15,
+33,22,22,22,22,22,6,7,8,22,22,22,22,22,22,22,22,22,22,22,22,22,22,31,
 33,22,22,22,6,7,30,27,28,22,22,22,22,22,22,22,22,22,22,22,22,22,22,31,
 33,22,6,7,30,27,27,27,28,22,22,22,22,22,22,22,22,22,22,22,22,22,22,31,
 33,22,26,27,27,27,27,27,28,22,22,22,22,22,22,22,22,22,22,22,22,22,22,31,
@@ -152,8 +152,8 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="7" name="Portal">
-  <object id="3" name="Portal" x="768" y="59">
+ <objectgroup id="11" name="Portals">
+  <object id="32" name="Portal" x="767" y="22">
    <point/>
   </object>
  </objectgroup>
