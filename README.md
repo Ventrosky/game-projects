@@ -19,6 +19,10 @@ Simple Road Crossing Game with **Phaser 3**. Developed as part of the Zenva's *H
 
 Just another flappy bird clone using **Java** and the **libGDX** framework.
 
+## Quill
+
+Text-based letter-writing RPG [code](https://github.com/Ventrosky/quill-letter-writing-rpg) using **Node.js**.
+
 ## Scratch
 
 **Scratch** projects created for the [Pisa CoderDojo](https://pisa.coderdojo.it/), used for teaching young people coding concepts
