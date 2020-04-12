@@ -26,9 +26,3 @@ Text-based letter-writing RPG [code](https://github.com/Ventrosky/quill-letter-w
 ## Scratch
 
 **Scratch** projects created for the [Pisa CoderDojo](https://pisa.coderdojo.it/), used for teaching young people coding concepts
-* [Catabunga-AR](https://scratch.mit.edu/projects/380456305/)
-* [MonsterClicker](https://scratch.mit.edu/projects/378267923/)
-* [Breakout](https://scratch.mit.edu/projects/364066075/)
-* [Quiz SetteNani](https://scratch.mit.edu/projects/222440477/)
-* [SimonGame](https://scratch.mit.edu/projects/220085608/)
- 
