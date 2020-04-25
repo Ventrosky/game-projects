@@ -4,6 +4,7 @@
 
 # Links
 
+* [Indovina il numero](https://scratch.mit.edu/projects/388860825/)
 * [Impariamo l'inglese](https://scratch.mit.edu/projects/384754331/)
 * [Catabunga-AR](https://scratch.mit.edu/projects/380456305/)
 * [MonsterClicker](https://scratch.mit.edu/projects/378267923/)
