@@ -10,6 +10,9 @@ import Carrot from '../game/Carrot';
 export default class Game extends Phaser.Scene {
   constructor() {
     super('game');
+  }
+
+  init() {
     this.carrotsCollected = 0;
   }
 
@@ -101,6 +104,11 @@ export default class Game extends Phaser.Scene {
     }
 
     this.horizontalWrap(this.player);
+
+    const bottomPlatform = this.findBottomMostPlatform();
+    if (this.player.y > bottomPlatform.y + 200) {
+      this.scene.start('game-over');
+    }
   }
 
   /**
@@ -149,5 +157,18 @@ export default class Game extends Phaser.Scene {
 
     this.carrotsCollected += 1;
     this.carrotsCollectedText.text = `Carrots: ${this.carrotsCollected}`;
+  }
+
+  findBottomMostPlatform() {
+    const platforms = this.platforms.getChildren();
+    let bottomPlatform = platforms[0];
+
+    for (let i = 1; i < platforms.length; i += 1) {
+      const platform = platforms[i];
+      if (platform.y > bottomPlatform.y) {
+        bottomPlatform = platform;
+      }
+    }
+    return bottomPlatform;
   }
 }
