@@ -7,6 +7,15 @@ const config = {
   width: 480,
   height: 640,
   scene: Game,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: {
+        y: 200,
+      },
+      debug: true,
+    },
+  },
 };
 
 // eslint-disable-next-line no-unused-vars
