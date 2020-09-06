@@ -12,6 +12,8 @@ export default class Game extends Phaser.Scene {
     this.load.image('background', backgroundImg);
     this.load.image('platform', platformImg);
     this.load.image('bunny-stand', playerStandImg);
+
+    this.cursors = this.input.keyboard.createCursorKeys();
   }
 
   create() {
@@ -41,6 +43,7 @@ export default class Game extends Phaser.Scene {
     this.player.body.checkCollision.right = false;
 
     this.cameras.main.startFollow(this.player);
+    this.cameras.main.setDeadzone(this.scale.width * 1.5);
   }
 
   update() {
@@ -57,6 +60,14 @@ export default class Game extends Phaser.Scene {
     const touchingDown = this.player.body.touching.down;
     if (touchingDown) {
       this.player.setVelocityY(-300);
+    }
+
+    if (this.cursors.left.isDown && !touchingDown) {
+      this.player.setVelocityX(-200);
+    } else if (this.cursors.right.isDown && !touchingDown) {
+      this.player.setVelocityX(200);
+    } else {
+      this.player.setVelocityX(0);
     }
   }
 }
