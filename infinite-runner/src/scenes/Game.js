@@ -15,7 +15,8 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(240, 320, 'background');
+    this.add.image(240, 320, 'background')
+      .setScrollFactor(1, 0);
 
     this.platforms = this.physics.add.staticGroup();
 
@@ -43,6 +44,16 @@ export default class Game extends Phaser.Scene {
   }
 
   update() {
+    this.platforms.children.iterate((child) => {
+      const platform = child;
+
+      const { scrollY } = this.cameras.main;
+      if (platform.y >= scrollY + 700) {
+        platform.y = scrollY - Phaser.Math.Between(50, 100);
+        platform.body.updateFromGameObject();
+      }
+    });
+
     const touchingDown = this.player.body.touching.down;
     if (touchingDown) {
       this.player.setVelocityY(-300);
