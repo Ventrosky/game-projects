@@ -1,13 +1,13 @@
 // eslint-disable-next-line max-len
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["sprite"] }] */
 import Phaser from 'phaser';
-import playerStandImg from '../assets/bunny2_stand.png';
-import playerJumpImg from '../assets/bunny2_jump.png';
+import playerStandImg from '../assets/dachshund_stand.png';
+import playerJumpImg from '../assets/dachshund_jump.png';
 import backgroundImg from '../assets/bg_layer1.png';
 import platformImg from '../assets/ground_grass.png';
-import carrotImg from '../assets/carrot.png';
+import boneImg from '../assets/bone.png';
 import jumpSfx from '../assets/sfx/phaseJump1.ogg';
-import Carrot from '../game/Carrot';
+import Bone from '../game/Bone';
 
 export default class Game extends Phaser.Scene {
   constructor() {
@@ -15,15 +15,16 @@ export default class Game extends Phaser.Scene {
   }
 
   init() {
-    this.carrotsCollected = 0;
+    this.bonesCollected = 0;
+    this.facing = 1;
   }
 
   preload() {
     this.load.image('background', backgroundImg);
     this.load.image('platform', platformImg);
-    this.load.image('bunny-stand', playerStandImg);
-    this.load.image('bunny-jump', playerJumpImg);
-    this.load.image('carrot', carrotImg);
+    this.load.image('dog-stand', playerStandImg);
+    this.load.image('dog-jump', playerJumpImg);
+    this.load.image('bone', boneImg);
 
     this.load.audio('jump', jumpSfx);// 'src/assets/sfx/phaseJump1.ogg');
 
@@ -47,7 +48,7 @@ export default class Game extends Phaser.Scene {
       body.updateFromGameObject();
     }
 
-    this.player = this.physics.add.sprite(240, 320, 'bunny-stand')
+    this.player = this.physics.add.sprite(240, 320, 'dog-stand')
       .setScale(0.5);
 
     this.physics.add.collider(this.platforms, this.player);
@@ -56,19 +57,27 @@ export default class Game extends Phaser.Scene {
     this.player.body.checkCollision.left = false;
     this.player.body.checkCollision.right = false;
 
+    // this.player.body.setSize(this.player.width / 2, this.player.height, this.player.width);
+    // this.player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(100, 150, 100, 300));
+    this.player.body.setSize(
+      this.player.width * 0.7,
+      this.player.height,
+      false,
+    ); // .setCircle(this.player.width / 2);
+
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setDeadzone(this.scale.width * 1.5);
 
-    this.carrots = this.physics.add.group({
-      classType: Carrot,
+    this.bones = this.physics.add.group({
+      classType: Bone,
     });
 
-    this.physics.add.collider(this.platforms, this.carrots);
+    this.physics.add.collider(this.platforms, this.bones);
 
-    this.physics.add.overlap(this.player, this.carrots, this.handleCollectCarrot, undefined, this);
+    this.physics.add.overlap(this.player, this.bones, this.handleCollectBone, undefined, this);
 
     const style = { color: '#000', fontSize: 24 };
-    this.carrotsCollectedText = this.add.text(240, 10, 'Carrots: 0', style)
+    this.bonesCollectedText = this.add.text(240, 10, 'Bones: 0', style)
       .setScrollFactor(0)
       .setOrigin(0.5, 0);
   }
@@ -81,30 +90,36 @@ export default class Game extends Phaser.Scene {
       if (platform.y >= scrollY + 700) {
         platform.y = scrollY - Phaser.Math.Between(50, 100);
         platform.body.updateFromGameObject();
-        this.addCarrotAbove(platform);
+        this.addBoneAbove(platform);
       }
     });
 
-    this.carrots.children.iterate((child) => {
-      const carrot = child;
+    this.bones.children.iterate((child) => {
+      const bone = child;
       const { scrollY } = this.cameras.main;
 
-      if (carrot.y >= scrollY + 700) {
-        this.carrots.killAndHide(carrot);
-        this.physics.world.disableBody(carrot.body);
+      if (bone.y >= scrollY + 700) {
+        this.bones.killAndHide(bone);
+        this.physics.world.disableBody(bone.body);
       }
     });
 
     const touchingDown = this.player.body.touching.down;
     if (touchingDown) {
-      this.player.setVelocityY(-300);
-      this.player.setTexture('bunny-jump');
+      this.player.setVelocityY(-305);
+      this.player.setTexture('dog-jump');
       this.sound.play('jump');
     }
 
     const vy = this.player.body.velocity.y;
-    if (vy > 0 && this.player.texture.key !== 'bunny-stand') {
-      this.player.setTexture('bunny-stand');
+    if (vy > 0 && this.player.texture.key !== 'dog-stand') {
+      this.player.setTexture('dog-stand');
+    }
+
+    const direction = Math.sign(this.player.body.velocity.x);
+    if (direction !== 0 && this.facing !== direction) {
+      this.facing *= -1;
+      this.player.flipX = this.facing === 1;
     }
 
     if (this.cursors.left.isDown && !touchingDown) {
@@ -140,35 +155,39 @@ export default class Game extends Phaser.Scene {
    *
    * @param {Phaser.GameObjects.Sprite} sprite
    */
-  addCarrotAbove(sprite) {
+  addBoneAbove(sprite) {
     const y = sprite.y - sprite.displayHeight;
 
     /** @type {Phaser.Physics.Arcade.Sprite} */
-    const carrot = this.carrots.get(sprite.x, y, 'carrot');
+    const bone = this.bones.get(sprite.x, y, 'bone');
 
-    carrot.setActive(true);
-    carrot.setVisible(true);
+    bone.setActive(true);
+    bone.setVisible(true);
 
-    this.add.existing(carrot);
+    bone.body.checkCollision.up = false;
+    bone.body.checkCollision.left = false;
+    bone.body.checkCollision.right = false;
 
-    carrot.body.setSize(carrot.width, carrot.height);
+    this.add.existing(bone);
 
-    this.physics.world.enable(carrot);
+    bone.body.setSize(bone.width, bone.height);
 
-    return carrot;
+    this.physics.world.enable(bone);
+
+    return bone;
   }
 
   /**
    *
    * @param {Phaser.Physics.Arcade.Sprite} player
-   * @param {Carrot} carrot
+   * @param {Bone} bone
    */
-  handleCollectCarrot(player, carrot) {
-    this.carrots.killAndHide(carrot);
-    this.physics.world.disableBody(carrot.body);
+  handleCollectBone(player, bone) {
+    this.bones.killAndHide(bone);
+    this.physics.world.disableBody(bone.body);
 
-    this.carrotsCollected += 1;
-    this.carrotsCollectedText.text = `Carrots: ${this.carrotsCollected}`;
+    this.bonesCollected += 1;
+    this.bonesCollectedText.text = `Bones: ${this.bonesCollected}`;
   }
 
   findBottomMostPlatform() {
