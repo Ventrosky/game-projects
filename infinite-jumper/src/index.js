@@ -14,7 +14,7 @@ const config = {
       gravity: {
         y: 200,
       },
-      debug: true,
+      debug: false,
     },
   },
 };
