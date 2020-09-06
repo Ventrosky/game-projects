@@ -10,6 +10,7 @@ import Carrot from '../game/Carrot';
 export default class Game extends Phaser.Scene {
   constructor() {
     super('game');
+    this.carrotsCollected = 0;
   }
 
   preload() {
@@ -57,6 +58,11 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.platforms, this.carrots);
 
     this.physics.add.overlap(this.player, this.carrots, this.handleCollectCarrot, undefined, this);
+
+    const style = { color: '#000', fontSize: 24 };
+    this.carrotsCollectedText = this.add.text(240, 10, 'Carrots: 0', style)
+      .setScrollFactor(0)
+      .setOrigin(0.5, 0);
   }
 
   update() {
@@ -140,5 +146,8 @@ export default class Game extends Phaser.Scene {
   handleCollectCarrot(player, carrot) {
     this.carrots.killAndHide(carrot);
     this.physics.world.disableBody(carrot.body);
+
+    this.carrotsCollected += 1;
+    this.carrotsCollectedText.text = `Carrots: ${this.carrotsCollected}`;
   }
 }
