@@ -1,3 +1,5 @@
+// eslint-disable-next-line max-len
+/* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["sprite"] }] */
 import Phaser from 'phaser';
 import playerStandImg from '../assets/bunny2_stand.png';
 import backgroundImg from '../assets/bg_layer1.png';
@@ -68,6 +70,21 @@ export default class Game extends Phaser.Scene {
       this.player.setVelocityX(200);
     } else {
       this.player.setVelocityX(0);
+    }
+
+    this.horizontalWrap(this.player);
+  }
+
+  /**
+  * @param {Phaser.GameObjects.Sprite} sprite
+  */
+  horizontalWrap(sprite) {
+    const halfWidth = sprite.displayWidth * 0.5;
+    const gameWidth = this.scale.width;
+    if (sprite.x < -halfWidth) {
+      sprite.x = gameWidth + halfWidth;
+    } else if (sprite.x > gameWidth + halfWidth) {
+      sprite.x = -halfWidth;
     }
   }
 }
