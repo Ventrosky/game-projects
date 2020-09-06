@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
+import carrotImg from "./assets/carrot.png";
 
 const config = {
   type: Phaser.AUTO,
@@ -15,14 +15,14 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-  this.load.image("logo", logoImg);
+  this.load.image("carrot", carrotImg);
 }
 
 function create() {
-  const logo = this.add.image(400, 150, "logo");
+  const carrot = this.add.image(400, 150, "carrot");
 
   this.tweens.add({
-    targets: logo,
+    targets: carrot,
     y: 450,
     duration: 2000,
     ease: "Power2",
