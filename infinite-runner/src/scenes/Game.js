@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import carrotImg from '../assets/carrot.png';
+import playerStandImg from '../assets/bunny2_stand.png';
 import backgroundImg from '../assets/bg_layer1.png';
 import platformImg from '../assets/ground_grass.png';
 
@@ -11,34 +11,41 @@ export default class Game extends Phaser.Scene {
   preload() {
     this.load.image('background', backgroundImg);
     this.load.image('platform', platformImg);
-    this.load.image('carrot', carrotImg);
+    this.load.image('bunny-stand', playerStandImg);
   }
 
   create() {
     this.add.image(240, 320, 'background');
 
-    const platforms = this.physics.add.staticGroup();
+    this.platforms = this.physics.add.staticGroup();
 
     for (let i = 0; i < 5; i += 1) {
       const x = Phaser.Math.Between(80, 400);
       const y = 150 * i;
 
-      const platform = platforms.create(x, y, 'platform');
+      const platform = this.platforms.create(x, y, 'platform');
       platform.scale = 0.5;
 
       const { body } = platform;
       body.updateFromGameObject();
     }
 
-    const carrot = this.add.image(240, 240, 'carrot');
+    this.player = this.physics.add.sprite(240, 320, 'bunny-stand')
+      .setScale(0.5);
 
-    this.tweens.add({
-      targets: carrot,
-      y: 450,
-      duration: 2000,
-      ease: 'Power2',
-      yoyo: true,
-      loop: -1,
-    });
+    this.physics.add.collider(this.platforms, this.player);
+
+    this.player.body.checkCollision.up = false;
+    this.player.body.checkCollision.left = false;
+    this.player.body.checkCollision.right = false;
+
+    this.cameras.main.startFollow(this.player);
+  }
+
+  update() {
+    const touchingDown = this.player.body.touching.down;
+    if (touchingDown) {
+      this.player.setVelocityY(-300);
+    }
   }
 }
