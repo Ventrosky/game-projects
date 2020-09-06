@@ -2,9 +2,11 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["sprite"] }] */
 import Phaser from 'phaser';
 import playerStandImg from '../assets/bunny2_stand.png';
+import playerJumpImg from '../assets/bunny2_jump.png';
 import backgroundImg from '../assets/bg_layer1.png';
 import platformImg from '../assets/ground_grass.png';
 import carrotImg from '../assets/carrot.png';
+import jumpSfx from '../assets/sfx/phaseJump1.ogg';
 import Carrot from '../game/Carrot';
 
 export default class Game extends Phaser.Scene {
@@ -20,7 +22,10 @@ export default class Game extends Phaser.Scene {
     this.load.image('background', backgroundImg);
     this.load.image('platform', platformImg);
     this.load.image('bunny-stand', playerStandImg);
+    this.load.image('bunny-jump', playerJumpImg);
     this.load.image('carrot', carrotImg);
+
+    this.load.audio('jump', jumpSfx);// 'src/assets/sfx/phaseJump1.ogg');
 
     this.cursors = this.input.keyboard.createCursorKeys();
   }
@@ -93,6 +98,13 @@ export default class Game extends Phaser.Scene {
     const touchingDown = this.player.body.touching.down;
     if (touchingDown) {
       this.player.setVelocityY(-300);
+      this.player.setTexture('bunny-jump');
+      this.sound.play('jump');
+    }
+
+    const vy = this.player.body.velocity.y;
+    if (vy > 0 && this.player.texture.key !== 'bunny-stand') {
+      this.player.setTexture('bunny-stand');
     }
 
     if (this.cursors.left.isDown && !touchingDown) {
